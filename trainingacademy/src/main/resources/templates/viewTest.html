@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Online Exam</title>
     <style>
         body {
@@ -64,118 +63,112 @@
     </style>
 </head>
 <body>
-<form id="quizForm" th:action="@{/checkResult}" method="post" onsubmit="return validateForm();">
-    <div id="examName">
-        <h2>Online Exam</h2>
-    </div>
+    <form id="quizForm" th:action="@{/checkResult}" method="post" onsubmit="return validateForm();">
+        <div id="examName">
+            <h2>Questions</h2>
+        </div>
 
-    <div id="timer">
-        Time Left: <span id="time">1:00</span>
-    </div>
+        <div id="timer">
+            Time Left: <span id="time">1:00</span>
+        </div>
 
-    <!-- Iterate through questions -->
-    <div th:each="question, questionIndex : ${viewQuestion}">
-        <div class="question" th:class="${questionIndex.index == 0 ? '' : 'hidden'}">
-            <p><strong th:text="${(questionIndex.index + 1) + '. ' + question.question}"></strong></p>
+        <div th:each="question, questionStat : ${viewQuestion}" class="question" th:style="${questionStat.index == 0} ? '' : 'display: none;'">
+            <p><strong th:text="${questionStat.count}"></strong>. <span th:text="${question.question}"></span></p>
             <input type="hidden" name="examId" th:value="${question.id}">
             <p class="option">
-                <input type="radio" th:name="'answer' + ${question.id}" th:value="A" th:onclick="'highlightAnswer(this)'">
+                <input type="radio" th:name="'answer' + ${question.id}" value="A" onclick="highlightAnswer(this)">
                 <span th:text="${question.optionA}"></span>
             </p>
             <p class="option">
-                <input type="radio" th:name="'answer' + ${question.id}" th:value="B" th:onclick="'highlightAnswer(this)'">
+                <input type="radio" th:name="'answer' + ${question.id}" value="B" onclick="highlightAnswer(this)">
                 <span th:text="${question.optionB}"></span>
             </p>
             <p class="option">
-                <input type="radio" th:name="'answer' + ${question.id}" th:value="C" th:onclick="'highlightAnswer(this)'">
+                <input type="radio" th:name="'answer' + ${question.id}" value="C" onclick="highlightAnswer(this)">
                 <span th:text="${question.optionC}"></span>
             </p>
             <p class="option">
-                <input type="radio" th:name="'answer' + ${question.id}" th:value="D" th:onclick="'highlightAnswer(this)'">
+                <input type="radio" th:name="'answer' + ${question.id}" value="D" onclick="highlightAnswer(this)">
                 <span th:text="${question.optionD}"></span>
             </p>
         </div>
-    </div>
 
-    <!-- Navigation buttons -->
-    <button type="button" id="prevBtn" onclick="previousQuestion()" style="display: none;">Previous Question</button>
-    <button type="button" id="nextBtn" onclick="nextQuestion()">Next Question</button>
-    <input id="submitBtn" type="submit" style="display: none;" value="Submit">
-</form>
+        <button type="button" onclick="previousQuestion()" style="display: none;">Previous Question</button>
+        <button type="button" onclick="nextQuestion()">Next Question</button>
+        <input id="submitBtn" type="submit" style="display: none;" value="Submit">
+    </form>
+    
+    <script th:inline="javascript">
+        var currentQuestion = 0;
+        var totalQuestions = /*[[${viewQuestion.size()}]]*/ 0;
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var currentQuestion = 0;
-    var totalQuestions = /*[[${viewQuestion != null ? viewQuestion.size() : 0}]]*/;
-    var examDuration = 1 * 60; // 1 minute for testing
+        var examDuration = 1 * 60; 
 
-    function startTimer(duration, display) {
-        var timer = duration, minutes, seconds;
-        var timerInterval = setInterval(function() {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var timerInterval = setInterval(function() {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
 
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            display.textContent = minutes + ":" + seconds;
+                display.textContent = minutes + ":" + seconds;
 
-            if (--timer < 0) {
-                clearInterval(timerInterval);
-                alert("Time's up! Your answers will be submitted.");
-                document.getElementById('quizForm').submit();
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's up! Your answers will be submitted.");
+                    document.getElementById('quizForm').submit();
+                }
+            }, 1000);
+        }
+
+        window.onload = function() {
+            var display = document.querySelector('#time');
+            startTimer(examDuration, display);
+        };
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                document.getElementsByClassName('question')[currentQuestion].style.display = 'none';
+                currentQuestion++;
+                document.getElementsByClassName('question')[currentQuestion].style.display = 'block';
             }
-        }, 1000);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var display = document.querySelector('#time');
-        startTimer(examDuration, display);
-    });
-
-    function nextQuestion() {
-        if (currentQuestion < totalQuestions - 1) {
-            document.getElementsByClassName('question')[currentQuestion].classList.add('hidden');
-            currentQuestion++;
-            document.getElementsByClassName('question')[currentQuestion].classList.remove('hidden');
+            toggleButtons();
         }
-        toggleButtons();
-    }
 
-    function previousQuestion() {
-        if (currentQuestion > 0) {
-            document.getElementsByClassName('question')[currentQuestion].classList.add('hidden');
-            currentQuestion--;
-            document.getElementsByClassName('question')[currentQuestion].classList.remove('hidden');
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                document.getElementsByClassName('question')[currentQuestion].style.display = 'none';
+                currentQuestion--;
+                document.getElementsByClassName('question')[currentQuestion].style.display = 'block';
+            }
+            toggleButtons();
         }
-        toggleButtons();
-    }
 
-    function toggleButtons() {
-        if (currentQuestion === 0) {
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'inline-block';
-            document.getElementById('submitBtn').style.display = 'none';
-        } else if (currentQuestion === totalQuestions - 1) {
-            document.getElementById('prevBtn').style.display = 'inline-block';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('submitBtn').style.display = 'inline-block';
-        } else {
-            document.getElementById('prevBtn').style.display = 'inline-block';
-            document.getElementById('nextBtn').style.display = 'inline-block';
-            document.getElementById('submitBtn').style.display = 'none';
+        function toggleButtons() {
+            if (currentQuestion === 0) {
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementsByTagName('button')[0].style.display = 'none';
+                document.getElementsByTagName('button')[1].style.display = 'inline-block';
+            } else if (currentQuestion === totalQuestions - 1) {
+                document.getElementById('submitBtn').style.display = 'inline-block';
+                document.getElementsByTagName('button')[0].style.display = 'inline-block';
+                document.getElementsByTagName('button')[1].style.display = 'none';
+            } else {
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementsByTagName('button')[0].style.display = 'inline-block';
+                document.getElementsByTagName('button')[1].style.display = 'inline-block';
+            }
         }
-    }
 
-    function highlightAnswer(selectedOption) {
-        var options = selectedOption.closest('.question').getElementsByClassName('option');
-        for (var i = 0; i < options.length; i++) {
-            options[i].classList.remove('selected-answer');
+        function highlightAnswer(selectedOption) {
+            var options = selectedOption.closest('.question').getElementsByClassName('option');
+            for (var i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected-answer');
+            }
+            selectedOption.parentElement.classList.add('selected-answer');
         }
-        selectedOption.parentElement.classList.add('selected-answer');
-    }
-    /*]]>*/
-</script>
-
+    </script>
 </body>
 </html>

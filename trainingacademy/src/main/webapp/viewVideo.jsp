@@ -86,9 +86,9 @@
             <% List<Videos> videos = (List<Videos>) request.getAttribute("video"); 
             for (Videos video : videos) { %>
             <tr>
-                <td class="video-category"><%=video.getTitle() %></td>
-                <td class="video-title"><%= video.getLink()%></td>
-                <td><iframe src="<%=video.getCategory()%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></td>
+                <td class="video-category"><%=video.getCategory() %></td>
+                <td class="video-title"><%=video.getTitle()%></td>
+                <td><iframe src="<%=video.getLink()%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></td>
                <td>
 			 
 			

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Display Videos</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         /* General Styles */
         body {
@@ -123,7 +124,22 @@
         }
     </style>
 </head>
+
 <body>
+<section th:if="${errorMessage}">
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		var alert = /*[[ ${errorMessage} ]]*/ '';
+	if(alert === 'you didnt pass the exam so learn again'){
+		Swal.fire({
+			title: alert,
+			confirmButtonText: 'OK'
+		});
+	}
+	/*]]>*/
+</script>
+	
+</section>
 <div class="navbar">
     <span>Systech</span>
     <div class="profile-section">

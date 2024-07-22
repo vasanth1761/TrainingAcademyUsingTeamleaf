@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.chainsys.trainingacademy.dao.UserDAO;
 import com.chainsys.trainingacademy.model.Users;
@@ -144,6 +145,11 @@ public String userLogin(@RequestParam("email") String email,@RequestParam("passw
  
 }
 }
+@GetMapping("/viewCourse")
+public String viewCourse()
+{
+	return"viewCourse";
+}
 
 
 @PostMapping("/selectCourse")
@@ -255,11 +261,8 @@ public String payment(@RequestParam("pay") String payment,@RequestParam("account
 	return "paymentSuccess";
 	
 }
-@GetMapping("/selectedCourseVideos")
-public String selectedCourseVideos() {
-	return "selectedCourseVideos";
-	
-}
+
+
 @RequestMapping("/selectedCourseVideos")
 public String selectedCourseVideos(HttpSession session,Model model)
 {   
@@ -300,7 +303,7 @@ public String getQuestion(HttpSession session,Model model)
 	
 }
   @PostMapping("/PercentageVerification") 
-  public String percentageVerification(@RequestParam("percentage")String percentage,HttpSession session,Model model ) 
+  public String percentageVerification(@RequestParam("percentage")String percentage,HttpSession session,Model model,RedirectAttributes redirect ) 
   { 
 	  double percentagee =Double.parseDouble(percentage); if (percentagee >= 80) 
 	  {
@@ -311,13 +314,14 @@ public String getQuestion(HttpSession session,Model model)
   
   e.printStackTrace(); }
   
-  return "certificate.jsp";
+  return "certificate";
   
-  } else { model.addAttribute("errorMessage","you didnt pass the exam so learn again ");
-  
+  } else { 
+	  redirect.addFlashAttribute("errorMessage","you didnt pass the exam so learn again");
+	  return "redirect:/selectedCourseVideos";
+      
   }
  
-  return "sorryPage.jsp";
   
   }
  
@@ -382,7 +386,12 @@ public String checkResultPost(@RequestParam Map<String, String> allParams, HttpS
     model.addAttribute("totalCount", 10); 
     model.addAttribute("correctCount", correctCount);
     model.addAttribute("percentage", percentage);
-    return "result.jsp";
+    return "result";
+}
+@RequestMapping("/thankYou")
+public String comments()
+{
+	return"thankyou";
 }
 @PostMapping("/Comments")
 public String comments(@RequestParam("comment") String comment,HttpSession session)
@@ -404,7 +413,7 @@ public String comments(@RequestParam("comment") String comment,HttpSession sessi
 		e.printStackTrace();
 	}
 
-	return "thankYou.jsp";
+	return "thankYou";
 	
 }
 
