@@ -140,6 +140,20 @@
 </script>
 	
 </section>
+<section th:if="${successMessage}">
+<script th:inline="javascript">
+	/*<![CDATA[*/
+		var alert = /*[[ ${successMessage} ]]*/ '';
+	if(alert === 'Payment Success'){
+		Swal.fire({
+			title: alert,
+			confirmButtonText: 'OK'
+		});
+	}
+	/*]]>*/
+</script>
+	
+</section>
 <div class="navbar">
     <span>Systech</span>
     <div class="profile-section">

@@ -355,11 +355,13 @@ public class InstructorController {
 		
 	}
 	
-  @RequestMapping("/viewPayment")
-  public void payment(Model model)
-  {   
-	  LearnerPaymentStatus viewPayment=new LearnerPaymentStatus();
-	  userdao.viewPayment();
-  }
+	 @RequestMapping("/viewPayment")
+	  public String payment(Model model)
+	  {   
+		  LearnerPaymentStatus viewPayment=new LearnerPaymentStatus();
+		  List<LearnerPaymentStatus>getPayment=userdao.viewPayment();
+		  model.addAttribute("viewPayment",getPayment);
+		  return "viewPayment";
+	  }
 
 }

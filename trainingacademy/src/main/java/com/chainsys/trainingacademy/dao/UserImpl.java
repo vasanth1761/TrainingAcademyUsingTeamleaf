@@ -294,8 +294,9 @@ public class UserImpl implements UserDAO {
 
 	@Override
 	public List<LearnerPaymentStatus> viewPayment() {
-		String query = "select from learner_id,learner_name,course_name,amount,payment,enroll_date from learner_payment";
+		String query = "select learner_id,learner_name,course_name,amount,payment,enroll_date from learner_payment";
 		return jdbcTemplate.query(query, new ViewPaymentMapper());
 	}
+
 
 }

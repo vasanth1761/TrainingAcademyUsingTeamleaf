@@ -160,15 +160,24 @@ public String course(@RequestParam("action")String course,Model model,HttpSessio
 	System.out.println(course);
 	try {
 		List<Course>viewCourse=userdao.getCourseType(course);
+        Map<Integer, Boolean> coursePaymentStatus = new HashMap<>();
+
+        for (Course c : viewCourse) {
+            boolean isPaid = userdao.checkExistingCourse(c.getCourseName(), user.getId());
+            coursePaymentStatus.put(c.getCourseId(), isPaid);
+        }
+        
 		for (Course loc : viewCourse) {
             String image = Base64.getEncoder().encodeToString(loc.getCourseImage());
             loc.setImage(image);
         }
 		model.addAttribute("viewCourse", viewCourse);
+        model.addAttribute("coursePaymentStatus", coursePaymentStatus);
+
 	} catch (ClassNotFoundException e) {
 		
 		e.printStackTrace();
-	} catch (SQLException e) {
+	} catch (SQLException e) {	
 		
 		e.printStackTrace();
 	}
@@ -233,7 +242,7 @@ public String paymentCard()
 
 
 @PostMapping("/paymentCard")
-public String payment(@RequestParam("pay") String payment,@RequestParam("account-number")String accountNumber,HttpSession session)
+public String payment(@RequestParam("pay") String payment,@RequestParam("account-number")String accountNumber,HttpSession session,RedirectAttributes redirect)
 {
 	LocalDate d=LocalDate.now();
     String date=d.toString();
@@ -258,7 +267,8 @@ public String payment(@RequestParam("pay") String payment,@RequestParam("account
 	
 		e.printStackTrace();
 	}
-	return "paymentSuccess";
+      redirect.addFlashAttribute("successMessage","Payment Success");
+	  return "redirect:/selectedCourseVideos";
 	
 }
 

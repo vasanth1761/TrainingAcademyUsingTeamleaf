@@ -17,7 +17,7 @@ public class ViewPaymentMapper implements RowMapper<LearnerPaymentStatus>{
 		getDetails.setLearnerName(rs.getString("learner_name"));
 		getDetails.setCourseName(rs.getString("course_name"));
 		getDetails.setPayment(rs.getString("payment"));
-		getDetails.setPayment(rs.getString("amount"));
+		getDetails.setAmount(rs.getInt("amount"));
 		getDetails.setDate(rs.getString("enroll_date"));
 		return getDetails;
 	}

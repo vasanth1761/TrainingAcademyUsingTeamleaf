@@ -154,7 +154,7 @@
         
         
     </div>
-    <div class="card" onclick="location.href='viewResult';">
+    <div class="card" onclick="location.href='viewPayment';">
     <br>
         <div class="card-title">
         <i class="fa-solid fa-credit-card fa-2xl"></i><br><br>
